@@ -1,0 +1,71 @@
+FUNCTIONAL DESIGN OF A 4-STAGE PIPELINED PROCESSOR:
+
+1. STAGES OF A 4-PIPELINED PROCESSOR:
+ 
+It typically includes the following stages:
+
+1) Instruction Fetch (IF): 
+                         The processor fetches the instruction from memory using the program counter (PC).
+                         The instruction is passed to the Instruction Register (IR).
+                         The PC is updated to the address of the next instruction.
+
+2) Instruction Decode (ID) Stage:
+                                The fetched instruction is decoded to identify the operation (ADD, SUB, AND, LOAD) and the source registers (Rs, Rt).
+                                The Control Unit generates control signals (e.g., ALU control, read/write signals).
+Registers are read (Rs, Rt) from the Register File.
+
+3) Execution (EX) Stage:
+                       The ALU performs the computation (ADD, SUB, AND) or calculates the address for LOAD instructions.
+                       The ALU outputs the result or address for memory access.
+4) Memory Access and Write Back (MEM/WB) Stage:
+                                              If the instruction is a LOAD, data is read from memory.
+
+For arithmetic instructions (ADD, SUB, AND), the result from the ALU is passed to the Write-back stage.
+
+The Register File is updated with the result from either the memory Fetches the instruction from memory using program counter.
+                         The instruction is passed to Instruction Register
+
+
+
+* Example Instructions:
+
+A) ADD R1, R2, R3 (ADD contents of R2 and R3, store the result in R1)
+
+B) SUB R4, R5, R6 (Subtract contents of R5 and R6, store the result in R4)
+
+C) AND R7, R8, R9 (Bitwise AND between R8 and R9, store the result in R7)
+
+D) LOAD R10, 0(R11) (Load data from memory address 0 + contents of R11 into R10)
+
+
+2) PIPELINE STAGES SIMULATION (WITH TIMING):
+
+Cycle	Instruction 1: ADD	     Instruction 2: SUB	                 Instruction 3: AND	                   Instruction 4: LOAD
+1	IF (ADD)			
+2	ID (ADD)	             IF (SUB)		
+3	EX (ADD)	             ID (SUB)	                         IF (AND)	
+4	MEM (ADD)	             EX (SUB)	                         ID (AND)	                           IF (LOAD)
+5	WB (ADD)	             MEM (SUB)	                         EX(AND)                                   ID (LOAD)
+6		                     WB (SUB)	                         MEM (AND)	                           EX (LOAD)
+7			                                                 WB (AND)	                           MEM (LOAD)
+8				                                                                                   WB (LOAD)
+
+
+BREAKDOWN:
+
+Cycle 1: The first instruction (ADD) is fetched (IF).
+Cycle 2: The first instruction (ADD) moves to ID, the second instruction (SUB) is fetched.
+Cycle 3: The first instruction (ADD) moves to EX, the second instruction (SUB) moves to ID, and the third instruction (AND) is fetched.
+Cycle 4: The first instruction (ADD) moves to MEM, the second instruction (SUB) moves to EX, the third instruction (AND) moves to ID, and the fourth instruction (LOAD) is fetched.
+Cycle 5: The first instruction (ADD) moves to WB, the second instruction (SUB) moves to MEM, the third instruction (AND) moves to EX, and the fourth instruction (LOAD) moves to ID.
+Cycle 6: The second instruction (SUB) moves to WB, the third instruction (AND) moves to MEM, and the fourth instruction (LOAD) moves to EX.
+Cycle 7: The third instruction (AND) moves to WB, and the fourth instruction (LOAD) moves to MEM.
+Cycle 8: The fourth instruction (LOAD) moves to WB.
+
+
+
+KEY POINTS:
+
+A) Data Hazard: If there is a dependency between instructions, it may cause delays. For example, if instruction 2 (SUB) used the result of instruction 1 (ADD), a data hazard would occur, and we would need to add forwarding or stalling.
+
+B) Control Hazard: If there were branching instructions, control hazards would need to be managed, but they aren't present in this example
